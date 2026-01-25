@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ldbc_01_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ldbc_01_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ldbc_comment_only_01_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ldbc_comment_only_01_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_100000_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_100000_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_10000_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_10000_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_1000_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_1000_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_100_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_100_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_10_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/truebase_10_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_100000_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_100000_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_10000_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_10000_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_1000_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_1000_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_100_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_100_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_10_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultratall_10_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_100000_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_100000_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_10000_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_10000_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_1000_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_1000_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_100_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_100_s_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_10_ir_creation.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/graph_init_sql/ultrawide_10_s_creation.sql" dialect="GenericSQL" />
+  </component>
+</project>

@@ -1,0 +1,40 @@
+services:
+  age_treebench:
+    image: apache/age:release_PG16_1.5.0
+    container_name: age_treebench
+    ports:
+      - "5456:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    command:
+      - postgres
+      - -c
+      - shared_preload_libraries=age,pg_stat_statements,auto_explain
+    volumes:
+      - age_treebench_data:/var/lib/postgresql/data
+      - ./data:/data:rw
+      - ./init:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h 127.0.0.1 -p 5432"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kuzu_treebench:
+    build:
+      context: .
+      dockerfile: Dockerfile.kuzu
+    container_name: kuzu_treebench
+    volumes:
+      - ./:/app
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+volumes:
+  age_treebench_data:

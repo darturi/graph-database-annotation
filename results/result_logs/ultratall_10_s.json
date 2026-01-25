@@ -1,0 +1,1222 @@
+{
+  "Find all descendants": {
+    "VANILLA": {
+      "time": [
+        2.083083032630384,
+        2.2217920050024986
+      ],
+      "plans": [
+        [
+          [
+            "Nested Loop  (cost=0.01..268.22 rows=3667 width=32)"
+          ],
+          [
+            "  Join Filter: age_match_vle_terminal_edge(descendant.id, ancestor.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.00..2.39 rows=11 width=133)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" ancestor  (cost=0.00..1.17 rows=1 width=8)"
+          ],
+          [
+            "              Filter: (agtype_access_operator(VARIADIC ARRAY[properties, '\"string_id\"'::agtype]) = '\"1\"'::agtype)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" descendant  (cost=0.00..1.11 rows=11 width=125)"
+          ],
+          [
+            "  ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ],
+        [
+          [
+            "Nested Loop  (cost=0.01..268.22 rows=3667 width=32)"
+          ],
+          [
+            "  Join Filter: age_match_vle_terminal_edge(descendant.id, ancestor.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.00..2.39 rows=11 width=133)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" ancestor  (cost=0.00..1.17 rows=1 width=8)"
+          ],
+          [
+            "              Filter: (agtype_access_operator(VARIADIC ARRAY[properties, '\"string_id\"'::agtype]) = '\"1\"'::agtype)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" descendant  (cost=0.00..1.11 rows=11 width=125)"
+          ],
+          [
+            "  ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ]
+      ]
+    },
+    "Integer (Range)": {
+      "time": [
+        1.8667089752852917,
+        1.4027080032974482
+      ],
+      "plans": [
+        [
+          [
+            "{\"id\": 844424930131969, \"label\": \"TreeNode\", \"properties\": {\"id\": \"1\", \"type\": \"TreeNode\", \"depth\": 0, \"__id__\": 1, \"height\": 6, \"string_id\": \"1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131970, \"label\": \"TreeNode\", \"properties\": {\"id\": \"2\", \"type\": \"TreeNode\", \"depth\": 1, \"__id__\": 2, \"height\": 5, \"string_id\": \"1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131971, \"label\": \"TreeNode\", \"properties\": {\"id\": \"3\", \"type\": \"TreeNode\", \"depth\": 2, \"__id__\": 3, \"height\": 4, \"string_id\": \"1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131974, \"label\": \"TreeNode\", \"properties\": {\"id\": \"6\", \"type\": \"TreeNode\", \"depth\": 3, \"__id__\": 6, \"height\": 3, \"string_id\": \"1.1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131975, \"label\": \"TreeNode\", \"properties\": {\"id\": \"7\", \"type\": \"TreeNode\", \"depth\": 4, \"__id__\": 7, \"height\": 2, \"string_id\": \"1.1.1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131976, \"label\": \"TreeNode\", \"properties\": {\"id\": \"8\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 8, \"height\": 0, \"string_id\": \"1.1.1.1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131977, \"label\": \"TreeNode\", \"properties\": {\"id\": \"9\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 9, \"height\": 1, \"string_id\": \"1.1.1.1.1.2\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131979, \"label\": \"TreeNode\", \"properties\": {\"id\": \"11\", \"type\": \"TreeNode\", \"depth\": 6, \"__id__\": 11, \"height\": 0, \"string_id\": \"1.1.1.1.1.2.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131978, \"label\": \"TreeNode\", \"properties\": {\"id\": \"10\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 10, \"height\": 0, \"string_id\": \"1.1.1.1.1.3\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131972, \"label\": \"TreeNode\", \"properties\": {\"id\": \"4\", \"type\": \"TreeNode\", \"depth\": 2, \"__id__\": 4, \"height\": 1, \"string_id\": \"1.1.2\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131973, \"label\": \"TreeNode\", \"properties\": {\"id\": \"5\", \"type\": \"TreeNode\", \"depth\": 3, \"__id__\": 5, \"height\": 0, \"string_id\": \"1.1.2.1\"}}::vertex"
+          ]
+        ],
+        [
+          [
+            "{\"id\": 844424930131969, \"label\": \"TreeNode\", \"properties\": {\"id\": \"1\", \"type\": \"TreeNode\", \"depth\": 0, \"__id__\": 1, \"height\": 6, \"string_id\": \"1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131970, \"label\": \"TreeNode\", \"properties\": {\"id\": \"2\", \"type\": \"TreeNode\", \"depth\": 1, \"__id__\": 2, \"height\": 5, \"string_id\": \"1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131971, \"label\": \"TreeNode\", \"properties\": {\"id\": \"3\", \"type\": \"TreeNode\", \"depth\": 2, \"__id__\": 3, \"height\": 4, \"string_id\": \"1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131974, \"label\": \"TreeNode\", \"properties\": {\"id\": \"6\", \"type\": \"TreeNode\", \"depth\": 3, \"__id__\": 6, \"height\": 3, \"string_id\": \"1.1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131975, \"label\": \"TreeNode\", \"properties\": {\"id\": \"7\", \"type\": \"TreeNode\", \"depth\": 4, \"__id__\": 7, \"height\": 2, \"string_id\": \"1.1.1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131976, \"label\": \"TreeNode\", \"properties\": {\"id\": \"8\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 8, \"height\": 0, \"string_id\": \"1.1.1.1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131977, \"label\": \"TreeNode\", \"properties\": {\"id\": \"9\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 9, \"height\": 1, \"string_id\": \"1.1.1.1.1.2\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131979, \"label\": \"TreeNode\", \"properties\": {\"id\": \"11\", \"type\": \"TreeNode\", \"depth\": 6, \"__id__\": 11, \"height\": 0, \"string_id\": \"1.1.1.1.1.2.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131978, \"label\": \"TreeNode\", \"properties\": {\"id\": \"10\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 10, \"height\": 0, \"string_id\": \"1.1.1.1.1.3\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131972, \"label\": \"TreeNode\", \"properties\": {\"id\": \"4\", \"type\": \"TreeNode\", \"depth\": 2, \"__id__\": 4, \"height\": 1, \"string_id\": \"1.1.2\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131973, \"label\": \"TreeNode\", \"properties\": {\"id\": \"5\", \"type\": \"TreeNode\", \"depth\": 3, \"__id__\": 5, \"height\": 0, \"string_id\": \"1.1.2.1\"}}::vertex"
+          ]
+        ]
+      ]
+    },
+    "run_info": [
+      {
+        "$rootID": "1",
+        "$id1": "1.1",
+        "$id2": "1.1.1.1.1.2.1",
+        "$nodeID": "1.1.1"
+      },
+      {
+        "$rootID": "1",
+        "$id1": "1.1",
+        "$id2": "1.1.2.1",
+        "$nodeID": "1.1.1.1.1.1"
+      }
+    ]
+  },
+  "Find all Leaves": {
+    "VANILLA": {
+      "time": [
+        4.393249982967973,
+        3.338875016197562
+      ],
+      "plans": [
+        [
+          [
+            "Nested Loop  (cost=0.01..197.53 rows=2333 width=32)"
+          ],
+          [
+            "  Join Filter: age_match_vle_terminal_edge(leaf.id, root.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.00..28.36 rows=7 width=133)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" root  (cost=0.00..1.14 rows=1 width=8)"
+          ],
+          [
+            "              Filter: (properties @> '{\"string_id\": \"1\"}'::agtype)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" leaf  (cost=0.00..27.15 rows=7 width=125)"
+          ],
+          [
+            "              Filter: (NOT ((SubPlan 1))::agtype)"
+          ],
+          [
+            "              SubPlan 1"
+          ],
+          [
+            "                ->  Hash Join  (cost=1.14..2.36 rows=1 width=0)"
+          ],
+          [
+            "                      Hash Cond: (_age_default_alias_2.id = _age_default_alias_1.start_id)"
+          ],
+          [
+            "                      ->  Append  (cost=0.00..1.17 rows=12 width=8)"
+          ],
+          [
+            "                            ->  Seq Scan on _ag_label_vertex _age_default_alias_2_1  (cost=0.00..0.00 rows=1 width=8)"
+          ],
+          [
+            "                            ->  Seq Scan on \"TreeNode\" _age_default_alias_2_2  (cost=0.00..1.11 rows=11 width=8)"
+          ],
+          [
+            "                      ->  Hash  (cost=1.12..1.12 rows=1 width=8)"
+          ],
+          [
+            "                            ->  Seq Scan on \"HAS_CHILD\" _age_default_alias_1  (cost=0.00..1.12 rows=1 width=8)"
+          ],
+          [
+            "                                  Filter: (end_id = leaf.id)"
+          ],
+          [
+            "  ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ],
+        [
+          [
+            "Nested Loop  (cost=0.01..197.53 rows=2333 width=32)"
+          ],
+          [
+            "  Join Filter: age_match_vle_terminal_edge(leaf.id, root.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.00..28.36 rows=7 width=133)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" root  (cost=0.00..1.14 rows=1 width=8)"
+          ],
+          [
+            "              Filter: (properties @> '{\"string_id\": \"1\"}'::agtype)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" leaf  (cost=0.00..27.15 rows=7 width=125)"
+          ],
+          [
+            "              Filter: (NOT ((SubPlan 1))::agtype)"
+          ],
+          [
+            "              SubPlan 1"
+          ],
+          [
+            "                ->  Hash Join  (cost=1.14..2.36 rows=1 width=0)"
+          ],
+          [
+            "                      Hash Cond: (_age_default_alias_2.id = _age_default_alias_1.start_id)"
+          ],
+          [
+            "                      ->  Append  (cost=0.00..1.17 rows=12 width=8)"
+          ],
+          [
+            "                            ->  Seq Scan on _ag_label_vertex _age_default_alias_2_1  (cost=0.00..0.00 rows=1 width=8)"
+          ],
+          [
+            "                            ->  Seq Scan on \"TreeNode\" _age_default_alias_2_2  (cost=0.00..1.11 rows=11 width=8)"
+          ],
+          [
+            "                      ->  Hash  (cost=1.12..1.12 rows=1 width=8)"
+          ],
+          [
+            "                            ->  Seq Scan on \"HAS_CHILD\" _age_default_alias_1  (cost=0.00..1.12 rows=1 width=8)"
+          ],
+          [
+            "                                  Filter: (end_id = leaf.id)"
+          ],
+          [
+            "  ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ]
+      ]
+    },
+    "Integer (Range)": {
+      "time": [
+        1.3775000115856528,
+        1.7294170102104545
+      ],
+      "plans": [
+        [
+          [
+            "{\"id\": 844424930131976, \"label\": \"TreeNode\", \"properties\": {\"id\": \"8\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 8, \"height\": 0, \"string_id\": \"1.1.1.1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131979, \"label\": \"TreeNode\", \"properties\": {\"id\": \"11\", \"type\": \"TreeNode\", \"depth\": 6, \"__id__\": 11, \"height\": 0, \"string_id\": \"1.1.1.1.1.2.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131978, \"label\": \"TreeNode\", \"properties\": {\"id\": \"10\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 10, \"height\": 0, \"string_id\": \"1.1.1.1.1.3\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131973, \"label\": \"TreeNode\", \"properties\": {\"id\": \"5\", \"type\": \"TreeNode\", \"depth\": 3, \"__id__\": 5, \"height\": 0, \"string_id\": \"1.1.2.1\"}}::vertex"
+          ]
+        ],
+        [
+          [
+            "{\"id\": 844424930131976, \"label\": \"TreeNode\", \"properties\": {\"id\": \"8\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 8, \"height\": 0, \"string_id\": \"1.1.1.1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131979, \"label\": \"TreeNode\", \"properties\": {\"id\": \"11\", \"type\": \"TreeNode\", \"depth\": 6, \"__id__\": 11, \"height\": 0, \"string_id\": \"1.1.1.1.1.2.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131978, \"label\": \"TreeNode\", \"properties\": {\"id\": \"10\", \"type\": \"TreeNode\", \"depth\": 5, \"__id__\": 10, \"height\": 0, \"string_id\": \"1.1.1.1.1.3\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131973, \"label\": \"TreeNode\", \"properties\": {\"id\": \"5\", \"type\": \"TreeNode\", \"depth\": 3, \"__id__\": 5, \"height\": 0, \"string_id\": \"1.1.2.1\"}}::vertex"
+          ]
+        ]
+      ]
+    },
+    "run_info": [
+      {
+        "$rootID": "1",
+        "$id1": "1.1",
+        "$id2": "1.1.1.1.1.1",
+        "$nodeID": "1.1.1.1.1.2"
+      },
+      {
+        "$rootID": "1",
+        "$id1": "1.1.2.1",
+        "$id2": "1.1.1.1.1.2.1",
+        "$nodeID": "1.1.1.1"
+      }
+    ]
+  },
+  "Count Descendants": {
+    "VANILLA": {
+      "time": [
+        2.54416698589921,
+        2.5889999233186245
+      ],
+      "plans": [
+        [
+          [
+            "Aggregate  (cost=277.39..277.40 rows=1 width=32)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.01..249.89 rows=3667 width=125)"
+          ],
+          [
+            "        Join Filter: age_match_vle_terminal_edge(descendant.id, ancestor.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "        ->  Nested Loop  (cost=0.00..2.39 rows=11 width=133)"
+          ],
+          [
+            "              ->  Seq Scan on \"TreeNode\" ancestor  (cost=0.00..1.17 rows=1 width=8)"
+          ],
+          [
+            "                    Filter: (agtype_access_operator(VARIADIC ARRAY[properties, '\"string_id\"'::agtype]) = '\"1\"'::agtype)"
+          ],
+          [
+            "              ->  Seq Scan on \"TreeNode\" descendant  (cost=0.00..1.11 rows=11 width=125)"
+          ],
+          [
+            "        ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ],
+        [
+          [
+            "Aggregate  (cost=277.39..277.40 rows=1 width=32)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.01..249.89 rows=3667 width=125)"
+          ],
+          [
+            "        Join Filter: age_match_vle_terminal_edge(descendant.id, ancestor.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "        ->  Nested Loop  (cost=0.00..2.39 rows=11 width=133)"
+          ],
+          [
+            "              ->  Seq Scan on \"TreeNode\" ancestor  (cost=0.00..1.17 rows=1 width=8)"
+          ],
+          [
+            "                    Filter: (agtype_access_operator(VARIADIC ARRAY[properties, '\"string_id\"'::agtype]) = '\"1\"'::agtype)"
+          ],
+          [
+            "              ->  Seq Scan on \"TreeNode\" descendant  (cost=0.00..1.11 rows=11 width=125)"
+          ],
+          [
+            "        ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ]
+      ]
+    },
+    "Integer (Range)": {
+      "time": [
+        1.409791992045939,
+        1.3057920150458813
+      ],
+      "plans": [
+        [
+          [
+            "11"
+          ]
+        ],
+        [
+          [
+            "11"
+          ]
+        ]
+      ]
+    },
+    "run_info": [
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1",
+        "$id2": "1.1.1.1.1.1",
+        "$nodeID": "1"
+      },
+      {
+        "$rootID": "1",
+        "$id1": "1.1.2.1",
+        "$id2": "1.1.1.1.1.3",
+        "$nodeID": "1"
+      }
+    ]
+  },
+  "Count Leaves": {
+    "VANILLA": {
+      "time": [
+        3.2011669827625155,
+        3.116208012215793
+      ],
+      "plans": [
+        [
+          [
+            "Aggregate  (cost=203.36..203.38 rows=1 width=32)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.01..185.87 rows=2333 width=125)"
+          ],
+          [
+            "        Join Filter: age_match_vle_terminal_edge(leaf.id, root.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "        ->  Nested Loop  (cost=0.00..28.36 rows=7 width=133)"
+          ],
+          [
+            "              ->  Seq Scan on \"TreeNode\" root  (cost=0.00..1.14 rows=1 width=8)"
+          ],
+          [
+            "                    Filter: (properties @> '{\"string_id\": \"1\"}'::agtype)"
+          ],
+          [
+            "              ->  Seq Scan on \"TreeNode\" leaf  (cost=0.00..27.15 rows=7 width=125)"
+          ],
+          [
+            "                    Filter: (NOT ((SubPlan 1))::agtype)"
+          ],
+          [
+            "                    SubPlan 1"
+          ],
+          [
+            "                      ->  Hash Join  (cost=1.14..2.36 rows=1 width=0)"
+          ],
+          [
+            "                            Hash Cond: (_age_default_alias_2.id = _age_default_alias_1.start_id)"
+          ],
+          [
+            "                            ->  Append  (cost=0.00..1.17 rows=12 width=8)"
+          ],
+          [
+            "                                  ->  Seq Scan on _ag_label_vertex _age_default_alias_2_1  (cost=0.00..0.00 rows=1 width=8)"
+          ],
+          [
+            "                                  ->  Seq Scan on \"TreeNode\" _age_default_alias_2_2  (cost=0.00..1.11 rows=11 width=8)"
+          ],
+          [
+            "                            ->  Hash  (cost=1.12..1.12 rows=1 width=8)"
+          ],
+          [
+            "                                  ->  Seq Scan on \"HAS_CHILD\" _age_default_alias_1  (cost=0.00..1.12 rows=1 width=8)"
+          ],
+          [
+            "                                        Filter: (end_id = leaf.id)"
+          ],
+          [
+            "        ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ],
+        [
+          [
+            "Aggregate  (cost=203.36..203.38 rows=1 width=32)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.01..185.87 rows=2333 width=125)"
+          ],
+          [
+            "        Join Filter: age_match_vle_terminal_edge(leaf.id, root.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "        ->  Nested Loop  (cost=0.00..28.36 rows=7 width=133)"
+          ],
+          [
+            "              ->  Seq Scan on \"TreeNode\" root  (cost=0.00..1.14 rows=1 width=8)"
+          ],
+          [
+            "                    Filter: (properties @> '{\"string_id\": \"1\"}'::agtype)"
+          ],
+          [
+            "              ->  Seq Scan on \"TreeNode\" leaf  (cost=0.00..27.15 rows=7 width=125)"
+          ],
+          [
+            "                    Filter: (NOT ((SubPlan 1))::agtype)"
+          ],
+          [
+            "                    SubPlan 1"
+          ],
+          [
+            "                      ->  Hash Join  (cost=1.14..2.36 rows=1 width=0)"
+          ],
+          [
+            "                            Hash Cond: (_age_default_alias_2.id = _age_default_alias_1.start_id)"
+          ],
+          [
+            "                            ->  Append  (cost=0.00..1.17 rows=12 width=8)"
+          ],
+          [
+            "                                  ->  Seq Scan on _ag_label_vertex _age_default_alias_2_1  (cost=0.00..0.00 rows=1 width=8)"
+          ],
+          [
+            "                                  ->  Seq Scan on \"TreeNode\" _age_default_alias_2_2  (cost=0.00..1.11 rows=11 width=8)"
+          ],
+          [
+            "                            ->  Hash  (cost=1.12..1.12 rows=1 width=8)"
+          ],
+          [
+            "                                  ->  Seq Scan on \"HAS_CHILD\" _age_default_alias_1  (cost=0.00..1.12 rows=1 width=8)"
+          ],
+          [
+            "                                        Filter: (end_id = leaf.id)"
+          ],
+          [
+            "        ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ]
+      ]
+    },
+    "Integer (Range)": {
+      "time": [
+        1.2487079948186874,
+        1.3191249454393983
+      ],
+      "plans": [
+        [
+          [
+            "4"
+          ]
+        ],
+        [
+          [
+            "4"
+          ]
+        ]
+      ]
+    },
+    "run_info": [
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1.1.1.3",
+        "$id2": "1.1.1.1",
+        "$nodeID": "1.1.2"
+      },
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1.1.1.1",
+        "$id2": "1.1.2",
+        "$nodeID": "1.1.1"
+      }
+    ]
+  },
+  "Check Same Subtree": {
+    "VANILLA": {
+      "time": [
+        89.94729199912399,
+        81.66620798874646
+      ],
+      "plans": [
+        [
+          [
+            "Subquery Scan on _  (cost=352948.63..352948.65 rows=1 width=32)"
+          ],
+          [
+            "  ->  Aggregate  (cost=352948.63..352948.65 rows=1 width=1)"
+          ],
+          [
+            "        ->  Nested Loop Left Join  (cost=0.02..348504.19 rows=1777777 width=32)"
+          ],
+          [
+            "              Join Filter: age_match_vle_terminal_edge(ca.id, age_id(_agtype_build_vertex(n2.id, _label_name('25565'::oid, n2.id), n2.properties)), _age_default_alias_1.edges)"
+          ],
+          [
+            "              ->  Nested Loop  (cost=0.00..2.35 rows=4 width=164)"
+          ],
+          [
+            "                    ->  Append  (cost=0.00..1.15 rows=2 width=82)"
+          ],
+          [
+            "                          ->  Seq Scan on _ag_label_vertex n1_1  (cost=0.00..0.00 rows=1 width=40)"
+          ],
+          [
+            "                                Filter: (properties @> '{\"string_id\": \"1.1.2\"}'::agtype)"
+          ],
+          [
+            "                          ->  Seq Scan on \"TreeNode\" n1_2  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "                                Filter: (properties @> '{\"string_id\": \"1.1.2\"}'::agtype)"
+          ],
+          [
+            "                    ->  Materialize  (cost=0.00..1.16 rows=2 width=82)"
+          ],
+          [
+            "                          ->  Append  (cost=0.00..1.15 rows=2 width=82)"
+          ],
+          [
+            "                                ->  Seq Scan on _ag_label_vertex n2_1  (cost=0.00..0.00 rows=1 width=40)"
+          ],
+          [
+            "                                      Filter: (properties @> '{\"string_id\": \"1.1.1.1\"}'::agtype)"
+          ],
+          [
+            "                                ->  Seq Scan on \"TreeNode\" n2_2  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "                                      Filter: (properties @> '{\"string_id\": \"1.1.1.1\"}'::agtype)"
+          ],
+          [
+            "              ->  Nested Loop  (cost=0.02..60458.80 rows=1333333 width=104)"
+          ],
+          [
+            "                    Join Filter: _ag_enforce_edge_uniqueness(_age_default_alias_0.edges, _age_default_alias_1.edges)"
+          ],
+          [
+            "                    ->  Nested Loop  (cost=0.01..281.27 rows=4000 width=72)"
+          ],
+          [
+            "                          Join Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(n1.id, _label_name('25565'::oid, n1.id), n1.properties)), ca.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "                          ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ],
+          [
+            "                          ->  Materialize  (cost=0.00..1.29 rows=12 width=40)"
+          ],
+          [
+            "                                ->  Append  (cost=0.00..1.23 rows=12 width=40)"
+          ],
+          [
+            "                                      ->  Seq Scan on _ag_label_vertex ca_1  (cost=0.00..0.01 rows=1 width=40)"
+          ],
+          [
+            "                                      ->  Seq Scan on \"TreeNode\" ca_2  (cost=0.00..1.17 rows=11 width=40)"
+          ],
+          [
+            "                    ->  Memoize  (cost=0.01..10.02 rows=1000 width=32)"
+          ],
+          [
+            "                          Cache Key: ca.id"
+          ],
+          [
+            "                          Cache Mode: binary"
+          ],
+          [
+            "                          ->  Function Scan on age_vle _age_default_alias_1  (cost=0.01..10.01 rows=1000 width=32)"
+          ],
+          [
+            "JIT:"
+          ],
+          [
+            "  Functions: 48"
+          ],
+          [
+            "  Options: Inlining false, Optimization false, Expressions true, Deforming true"
+          ]
+        ],
+        [
+          [
+            "Subquery Scan on _  (cost=352948.63..352948.65 rows=1 width=32)"
+          ],
+          [
+            "  ->  Aggregate  (cost=352948.63..352948.65 rows=1 width=1)"
+          ],
+          [
+            "        ->  Nested Loop Left Join  (cost=0.02..348504.19 rows=1777777 width=32)"
+          ],
+          [
+            "              Join Filter: age_match_vle_terminal_edge(ca.id, age_id(_agtype_build_vertex(n2.id, _label_name('25565'::oid, n2.id), n2.properties)), _age_default_alias_1.edges)"
+          ],
+          [
+            "              ->  Nested Loop  (cost=0.00..2.35 rows=4 width=164)"
+          ],
+          [
+            "                    ->  Append  (cost=0.00..1.15 rows=2 width=82)"
+          ],
+          [
+            "                          ->  Seq Scan on _ag_label_vertex n1_1  (cost=0.00..0.00 rows=1 width=40)"
+          ],
+          [
+            "                                Filter: (properties @> '{\"string_id\": \"1.1.1.1.1\"}'::agtype)"
+          ],
+          [
+            "                          ->  Seq Scan on \"TreeNode\" n1_2  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "                                Filter: (properties @> '{\"string_id\": \"1.1.1.1.1\"}'::agtype)"
+          ],
+          [
+            "                    ->  Materialize  (cost=0.00..1.16 rows=2 width=82)"
+          ],
+          [
+            "                          ->  Append  (cost=0.00..1.15 rows=2 width=82)"
+          ],
+          [
+            "                                ->  Seq Scan on _ag_label_vertex n2_1  (cost=0.00..0.00 rows=1 width=40)"
+          ],
+          [
+            "                                      Filter: (properties @> '{\"string_id\": \"1.1\"}'::agtype)"
+          ],
+          [
+            "                                ->  Seq Scan on \"TreeNode\" n2_2  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "                                      Filter: (properties @> '{\"string_id\": \"1.1\"}'::agtype)"
+          ],
+          [
+            "              ->  Nested Loop  (cost=0.02..60458.80 rows=1333333 width=104)"
+          ],
+          [
+            "                    Join Filter: _ag_enforce_edge_uniqueness(_age_default_alias_0.edges, _age_default_alias_1.edges)"
+          ],
+          [
+            "                    ->  Nested Loop  (cost=0.01..281.27 rows=4000 width=72)"
+          ],
+          [
+            "                          Join Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(n1.id, _label_name('25565'::oid, n1.id), n1.properties)), ca.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "                          ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ],
+          [
+            "                          ->  Materialize  (cost=0.00..1.29 rows=12 width=40)"
+          ],
+          [
+            "                                ->  Append  (cost=0.00..1.23 rows=12 width=40)"
+          ],
+          [
+            "                                      ->  Seq Scan on _ag_label_vertex ca_1  (cost=0.00..0.01 rows=1 width=40)"
+          ],
+          [
+            "                                      ->  Seq Scan on \"TreeNode\" ca_2  (cost=0.00..1.17 rows=11 width=40)"
+          ],
+          [
+            "                    ->  Memoize  (cost=0.01..10.02 rows=1000 width=32)"
+          ],
+          [
+            "                          Cache Key: ca.id"
+          ],
+          [
+            "                          Cache Mode: binary"
+          ],
+          [
+            "                          ->  Function Scan on age_vle _age_default_alias_1  (cost=0.01..10.01 rows=1000 width=32)"
+          ],
+          [
+            "JIT:"
+          ],
+          [
+            "  Functions: 48"
+          ],
+          [
+            "  Options: Inlining false, Optimization false, Expressions true, Deforming true"
+          ]
+        ]
+      ]
+    },
+    "Integer (Range)": {
+      "time": [
+        1.423874986357987,
+        2.844333997927606
+      ],
+      "plans": [
+        [
+          [
+            "true"
+          ]
+        ],
+        [
+          [
+            "true"
+          ]
+        ]
+      ]
+    },
+    "run_info": [
+      {
+        "$rootID": "1",
+        "$id1": "1.1.2",
+        "$id2": "1.1.1.1",
+        "$nodeID": "1.1.1.1"
+      },
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1.1.1",
+        "$id2": "1.1",
+        "$nodeID": "1.1.1.1.1"
+      }
+    ]
+  },
+  "Get LCA": {
+    "VANILLA": {
+      "time": [
+        70.45658305287361,
+        72.78029201552272
+      ],
+      "plans": [
+        [
+          [
+            "Subquery Scan on _  (cost=123739.32..123739.33 rows=1 width=32)"
+          ],
+          [
+            "  ->  Limit  (cost=123739.32..123739.32 rows=1 width=64)"
+          ],
+          [
+            "        ->  Sort  (cost=123739.32..127072.65 rows=1333333 width=64)"
+          ],
+          [
+            "              Sort Key: (age_length(_agtype_build_path(_agtype_build_vertex(n1.id, _label_name('25565'::oid, n1.id), n1.properties), _age_default_alias_0.edges, _agtype_build_vertex(lca.id, _label_name('25565'::oid, lca.id), lca.properties))))"
+          ],
+          [
+            "              ->  Nested Loop  (cost=0.01..117072.65 rows=1333333 width=64)"
+          ],
+          [
+            "                    Join Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(n1.id, _label_name('25565'::oid, n1.id), n1.properties)), lca.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "                    ->  Nested Loop  (cost=0.01..382.35 rows=4000 width=118)"
+          ],
+          [
+            "                          Join Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(n2.id, _label_name('25565'::oid, n2.id), n2.properties)), age_id(_agtype_build_vertex(lca.id, _label_name('25565'::oid, lca.id), lca.properties)), _age_default_alias_1.edges)"
+          ],
+          [
+            "                          ->  Nested Loop  (cost=0.01..21.14 rows=1000 width=157)"
+          ],
+          [
+            "                                ->  Seq Scan on \"TreeNode\" n2  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "                                      Filter: (properties @> '{\"string_id\": \"1.1.1.1.1.2\"}'::agtype)"
+          ],
+          [
+            "                                ->  Function Scan on age_vle _age_default_alias_1  (cost=0.01..10.01 rows=1000 width=32)"
+          ],
+          [
+            "                          ->  Materialize  (cost=0.00..1.23 rows=12 width=118)"
+          ],
+          [
+            "                                ->  Append  (cost=0.00..1.17 rows=12 width=118)"
+          ],
+          [
+            "                                      ->  Seq Scan on _ag_label_vertex lca_1  (cost=0.00..0.00 rows=1 width=40)"
+          ],
+          [
+            "                                      ->  Seq Scan on \"TreeNode\" lca_2  (cost=0.00..1.11 rows=11 width=125)"
+          ],
+          [
+            "                    ->  Materialize  (cost=0.01..26.14 rows=1000 width=157)"
+          ],
+          [
+            "                          ->  Nested Loop  (cost=0.01..21.14 rows=1000 width=157)"
+          ],
+          [
+            "                                ->  Seq Scan on \"TreeNode\" n1  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "                                      Filter: (properties @> '{\"string_id\": \"1.1.1.1\"}'::agtype)"
+          ],
+          [
+            "                                ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ],
+          [
+            "JIT:"
+          ],
+          [
+            "  Functions: 37"
+          ],
+          [
+            "  Options: Inlining false, Optimization false, Expressions true, Deforming true"
+          ]
+        ],
+        [
+          [
+            "Subquery Scan on _  (cost=123739.32..123739.33 rows=1 width=32)"
+          ],
+          [
+            "  ->  Limit  (cost=123739.32..123739.32 rows=1 width=64)"
+          ],
+          [
+            "        ->  Sort  (cost=123739.32..127072.65 rows=1333333 width=64)"
+          ],
+          [
+            "              Sort Key: (age_length(_agtype_build_path(_agtype_build_vertex(n1.id, _label_name('25565'::oid, n1.id), n1.properties), _age_default_alias_0.edges, _agtype_build_vertex(lca.id, _label_name('25565'::oid, lca.id), lca.properties))))"
+          ],
+          [
+            "              ->  Nested Loop  (cost=0.01..117072.65 rows=1333333 width=64)"
+          ],
+          [
+            "                    Join Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(n1.id, _label_name('25565'::oid, n1.id), n1.properties)), lca.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "                    ->  Nested Loop  (cost=0.01..382.35 rows=4000 width=118)"
+          ],
+          [
+            "                          Join Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(n2.id, _label_name('25565'::oid, n2.id), n2.properties)), age_id(_agtype_build_vertex(lca.id, _label_name('25565'::oid, lca.id), lca.properties)), _age_default_alias_1.edges)"
+          ],
+          [
+            "                          ->  Nested Loop  (cost=0.01..21.14 rows=1000 width=157)"
+          ],
+          [
+            "                                ->  Seq Scan on \"TreeNode\" n2  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "                                      Filter: (properties @> '{\"string_id\": \"1\"}'::agtype)"
+          ],
+          [
+            "                                ->  Function Scan on age_vle _age_default_alias_1  (cost=0.01..10.01 rows=1000 width=32)"
+          ],
+          [
+            "                          ->  Materialize  (cost=0.00..1.23 rows=12 width=118)"
+          ],
+          [
+            "                                ->  Append  (cost=0.00..1.17 rows=12 width=118)"
+          ],
+          [
+            "                                      ->  Seq Scan on _ag_label_vertex lca_1  (cost=0.00..0.00 rows=1 width=40)"
+          ],
+          [
+            "                                      ->  Seq Scan on \"TreeNode\" lca_2  (cost=0.00..1.11 rows=11 width=125)"
+          ],
+          [
+            "                    ->  Materialize  (cost=0.01..26.14 rows=1000 width=157)"
+          ],
+          [
+            "                          ->  Nested Loop  (cost=0.01..21.14 rows=1000 width=157)"
+          ],
+          [
+            "                                ->  Seq Scan on \"TreeNode\" n1  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "                                      Filter: (properties @> '{\"string_id\": \"1.1.1.1.1.2\"}'::agtype)"
+          ],
+          [
+            "                                ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ],
+          [
+            "JIT:"
+          ],
+          [
+            "  Functions: 37"
+          ],
+          [
+            "  Options: Inlining false, Optimization false, Expressions true, Deforming true"
+          ]
+        ]
+      ]
+    },
+    "Integer (Range)": {
+      "time": [
+        2.3659169673919678,
+        2.4600839242339134
+      ],
+      "plans": [
+        [
+          [
+            "{\"id\": 844424930131974, \"label\": \"TreeNode\", \"properties\": {\"id\": \"6\", \"type\": \"TreeNode\", \"depth\": 3, \"__id__\": 6, \"height\": 3, \"string_id\": \"1.1.1.1\"}}::vertex"
+          ]
+        ],
+        [
+          [
+            "{\"id\": 844424930131969, \"label\": \"TreeNode\", \"properties\": {\"id\": \"1\", \"type\": \"TreeNode\", \"depth\": 0, \"__id__\": 1, \"height\": 6, \"string_id\": \"1\"}}::vertex"
+          ]
+        ]
+      ]
+    },
+    "run_info": [
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1.1",
+        "$id2": "1.1.1.1.1.2",
+        "$nodeID": "1"
+      },
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1.1.1.2",
+        "$id2": "1",
+        "$nodeID": "1.1.1.1.1.2.1"
+      }
+    ]
+  },
+  "Get all ancestors": {
+    "VANILLA": {
+      "time": [
+        2.1068750647827983,
+        2.316958038136363
+      ],
+      "plans": [
+        [
+          [
+            "Nested Loop  (cost=0.02..284.93 rows=3667 width=32)"
+          ],
+          [
+            "  Join Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(node.id, _label_name('25565'::oid, node.id), node.properties)), ancestor.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.00..2.36 rows=11 width=250)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" node  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "              Filter: (properties @> '{\"string_id\": \"1.1.1\"}'::agtype)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" ancestor  (cost=0.00..1.11 rows=11 width=125)"
+          ],
+          [
+            "  ->  Memoize  (cost=0.02..10.02 rows=1000 width=32)"
+          ],
+          [
+            "        Cache Key: node.id, node.id, node.properties"
+          ],
+          [
+            "        Cache Mode: binary"
+          ],
+          [
+            "        ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ],
+        [
+          [
+            "Nested Loop  (cost=0.02..284.93 rows=3667 width=32)"
+          ],
+          [
+            "  Join Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(node.id, _label_name('25565'::oid, node.id), node.properties)), ancestor.id, _age_default_alias_0.edges)"
+          ],
+          [
+            "  ->  Nested Loop  (cost=0.00..2.36 rows=11 width=250)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" node  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "              Filter: (properties @> '{\"string_id\": \"1.1.1.1.1\"}'::agtype)"
+          ],
+          [
+            "        ->  Seq Scan on \"TreeNode\" ancestor  (cost=0.00..1.11 rows=11 width=125)"
+          ],
+          [
+            "  ->  Memoize  (cost=0.02..10.02 rows=1000 width=32)"
+          ],
+          [
+            "        Cache Key: node.id, node.id, node.properties"
+          ],
+          [
+            "        Cache Mode: binary"
+          ],
+          [
+            "        ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..10.01 rows=1000 width=32)"
+          ]
+        ]
+      ]
+    },
+    "Integer (Range)": {
+      "time": [
+        1.7587500624358654,
+        3.5691249649971724
+      ],
+      "plans": [
+        [
+          [
+            "{\"id\": 844424930131969, \"label\": \"TreeNode\", \"properties\": {\"id\": \"1\", \"type\": \"TreeNode\", \"depth\": 0, \"__id__\": 1, \"height\": 6, \"string_id\": \"1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131970, \"label\": \"TreeNode\", \"properties\": {\"id\": \"2\", \"type\": \"TreeNode\", \"depth\": 1, \"__id__\": 2, \"height\": 5, \"string_id\": \"1.1\"}}::vertex"
+          ]
+        ],
+        [
+          [
+            "{\"id\": 844424930131969, \"label\": \"TreeNode\", \"properties\": {\"id\": \"1\", \"type\": \"TreeNode\", \"depth\": 0, \"__id__\": 1, \"height\": 6, \"string_id\": \"1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131970, \"label\": \"TreeNode\", \"properties\": {\"id\": \"2\", \"type\": \"TreeNode\", \"depth\": 1, \"__id__\": 2, \"height\": 5, \"string_id\": \"1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131971, \"label\": \"TreeNode\", \"properties\": {\"id\": \"3\", \"type\": \"TreeNode\", \"depth\": 2, \"__id__\": 3, \"height\": 4, \"string_id\": \"1.1.1\"}}::vertex"
+          ],
+          [
+            "{\"id\": 844424930131974, \"label\": \"TreeNode\", \"properties\": {\"id\": \"6\", \"type\": \"TreeNode\", \"depth\": 3, \"__id__\": 6, \"height\": 3, \"string_id\": \"1.1.1.1\"}}::vertex"
+          ]
+        ]
+      ]
+    },
+    "run_info": [
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1.1.1.2",
+        "$id2": "1.1.1.1.1.2.1",
+        "$nodeID": "1.1.1"
+      },
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1.1.1.2.1",
+        "$id2": "1.1.1.1.1.1",
+        "$nodeID": "1.1.1.1.1"
+      }
+    ]
+  },
+  "Check if one node is the ancestor of another": {
+    "VANILLA": {
+      "time": [
+        2.5894170394167304,
+        2.52812507096678
+      ],
+      "plans": [
+        [
+          [
+            "Nested Loop  (cost=0.00..2.48 rows=1 width=32)"
+          ],
+          [
+            "  ->  Seq Scan on \"TreeNode\" node1  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "        Filter: (properties @> '{\"string_id\": \"1.1.1.1.1\"}'::agtype)"
+          ],
+          [
+            "  ->  Seq Scan on \"TreeNode\" node2  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "        Filter: (properties @> '{\"string_id\": \"1.1.1.1.1.2.1\"}'::agtype)"
+          ],
+          [
+            "  SubPlan 1"
+          ],
+          [
+            "    ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..27.51 rows=333 width=0)"
+          ],
+          [
+            "          Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(node1.id, _label_name('25565'::oid, node1.id), node1.properties)), age_id(_agtype_build_vertex(node2.id, _label_name('25565'::oid, node2.id), node2.properties)), edges)"
+          ],
+          [
+            "  SubPlan 2"
+          ],
+          [
+            "    ->  Function Scan on age_vle _age_default_alias_1  (cost=0.01..27.51 rows=333 width=0)"
+          ],
+          [
+            "          Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(node2.id, _label_name('25565'::oid, node2.id), node2.properties)), age_id(_agtype_build_vertex(node1.id, _label_name('25565'::oid, node1.id), node1.properties)), edges)"
+          ]
+        ],
+        [
+          [
+            "Nested Loop  (cost=0.00..2.48 rows=1 width=32)"
+          ],
+          [
+            "  ->  Seq Scan on \"TreeNode\" node1  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "        Filter: (properties @> '{\"string_id\": \"1.1.1.1.1\"}'::agtype)"
+          ],
+          [
+            "  ->  Seq Scan on \"TreeNode\" node2  (cost=0.00..1.14 rows=1 width=125)"
+          ],
+          [
+            "        Filter: (properties @> '{\"string_id\": \"1.1.1.1.1.1\"}'::agtype)"
+          ],
+          [
+            "  SubPlan 1"
+          ],
+          [
+            "    ->  Function Scan on age_vle _age_default_alias_0  (cost=0.01..27.51 rows=333 width=0)"
+          ],
+          [
+            "          Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(node1.id, _label_name('25565'::oid, node1.id), node1.properties)), age_id(_agtype_build_vertex(node2.id, _label_name('25565'::oid, node2.id), node2.properties)), edges)"
+          ],
+          [
+            "  SubPlan 2"
+          ],
+          [
+            "    ->  Function Scan on age_vle _age_default_alias_1  (cost=0.01..27.51 rows=333 width=0)"
+          ],
+          [
+            "          Filter: age_match_vle_terminal_edge(age_id(_agtype_build_vertex(node2.id, _label_name('25565'::oid, node2.id), node2.properties)), age_id(_agtype_build_vertex(node1.id, _label_name('25565'::oid, node1.id), node1.properties)), edges)"
+          ]
+        ]
+      ]
+    },
+    "Integer (Range)": {
+      "time": [
+        0.8033750345930457,
+        0.9203749941661954
+      ],
+      "plans": [
+        [
+          [
+            "true"
+          ]
+        ],
+        [
+          [
+            "true"
+          ]
+        ]
+      ]
+    },
+    "run_info": [
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1.1.1",
+        "$id2": "1.1.1.1.1.2.1",
+        "$nodeID": "1.1.1"
+      },
+      {
+        "$rootID": "1",
+        "$id1": "1.1.1.1.1",
+        "$id2": "1.1.1.1.1.1",
+        "$nodeID": "1.1.1"
+      }
+    ]
+  }
+}

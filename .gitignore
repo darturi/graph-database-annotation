@@ -1,0 +1,6 @@
+graph_metadata/*
+graph_init_sql/*
+data/*
+kuzu_databases/*
+.env
+
