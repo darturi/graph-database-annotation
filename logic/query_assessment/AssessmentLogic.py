@@ -1,18 +1,17 @@
 import copy
 import json
-import random
-from logic.ExecutorDefinitions import Executor, ApacheExecutor
 import os
+from logic.ExecutorDefinitions import Executor, ApacheExecutor
 import pandas as pd
 from tqdm import tqdm
-
+from pathlib import Path
 from logic.query_assessment.CreateParametrizedQueries import Parametrizer
 
 # By parsing sql contents
-def get_all_graph_names(flag, sql_path="/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/graph_init_sql"):
+def get_all_graph_names(flag : str, sql_path : Path):
     graph_names = []
 
-    for filename in os.listdir(sql_path):
+    for filename in Path.iterdir(sql_path):
         if flag not in filename:
             continue
 
@@ -25,29 +24,33 @@ def get_all_graph_names(flag, sql_path="/Users/danielarturi/Desktop/COMP 400/Kuz
     return graph_names
 
 
-def load_queries(query_file, query_base_path="/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/queries"):
-    query_path = os.path.join(query_base_path, query_file)
+# def load_queries(query_file : str | Path, query_base_path=Path("/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/queries")):
+def load_queries(
+        query_file: str | Path,
+        query_base_path : Path
+):
+    query_path = query_base_path / Path(query_file)
     query_df = pd.read_csv(query_path, sep="|")
     return query_df
 
 class Assessor:
-    def __init__(self, graph_name: str, executor: Executor, save_logs: str):
+    def __init__(self, graph_name: str, executor: Executor, save_logs: Path):
         self.executor = executor
         self.graph_name = graph_name
 
-        self.save_logs = os.path.join(save_logs, f"{graph_name}.json")
+        self.save_logs = save_logs / Path(f"{graph_name}.json")
 
         self.parameter_generator = Parametrizer()
         self.parameter_generator.set_metadata(self.graph_name)
 
-    def parametrize_query(self, query, param_dict):
+    def parametrize_query(self, query : str, param_dict : dict):
         q_copy = copy.deepcopy(query)
         for k, v in param_dict.items():
             q_copy = q_copy.replace(k, str(v))
         q_copy = q_copy.replace("$GRAPHNAME", self.graph_name)
         return q_copy
 
-    def run_query_n(self, vanilla_p, annotated_p, heat=5, n=200):
+    def run_query_n(self, vanilla_p : str, annotated_p : str, heat=5, n=200):
         vanilla_dict = {
             "time" : [],
             "plans" : []
@@ -92,7 +95,7 @@ class Assessor:
         }
 
 
-    def run_all_query_n(self, query_df, heat=1, n=1):
+    def run_all_query_n(self, query_df : pd.DataFrame, heat=1, n=1):
         log_dict = {}
         for _, row in query_df.iterrows():
             description_p, vanilla_p, ann_p = list(zip(query_df.columns, row.values))
@@ -104,25 +107,49 @@ class Assessor:
 
         return log_dict
 
-def assess_db(ex, string_location, ir_location,
-              result_log_base="/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/results/result_logs",
+def assess_db(ex, string_location : Path | str, ir_location : Path | str,
+              result_log_base : Path,
+              query_path : Path,
+              sql_path : Path,
               heat=5, n=200
               ):
-    query_df_ir = load_queries(ir_location)
-    query_df_s = load_queries(string_location)
+    query_df_ir = load_queries(
+        query_file=ir_location,
+        query_base_path=query_path
+    )
+    query_df_s = load_queries(
+        query_file=string_location,
+        query_base_path=query_path
+    )
 
-    graph_names_s = get_all_graph_names(flag="_s_")
-    graph_names_ir = get_all_graph_names(flag="_ir_")
+    graph_names_s = get_all_graph_names(flag="_s_", sql_path=sql_path)
+    graph_names_ir = get_all_graph_names(flag="_ir_", sql_path=sql_path)
 
     for graph_name in tqdm(graph_names_s, desc="Processing string graphs"):
         print(f"Processing {graph_name}")
-        ass = Assessor(graph_name, ex, result_log_base)
-        ass.run_all_query_n(query_df_s, heat=heat, n=n)
+        ass = Assessor(
+            graph_name=graph_name,
+            executor=ex,
+            save_logs=result_log_base
+        )
+        ass.run_all_query_n(
+            query_df=query_df_s,
+            heat=heat,
+            n=n
+        )
 
     for graph_name in tqdm(graph_names_ir, desc="Processing string graphs"):
         print(f"Processing {graph_name}")
-        ass = Assessor(graph_name, ex, result_log_base)
-        ass.run_all_query_n(query_df_ir, heat=heat, n=n)
+        ass = Assessor(
+            graph_name=graph_name,
+            executor=ex,
+            save_logs=result_log_base
+        )
+        ass.run_all_query_n(
+            query_df=query_df_ir,
+            heat=heat,
+            n=n
+        )
 
 
 
@@ -138,10 +165,15 @@ if __name__ == "__main__":
         port=5456
     )
 
+    project_path = os.getenv("PROJECT_PATH")
+
     assess_db(
-        ae,
-        s_location_val,
-        ir_location_val,
+        ex=ae,
+        string_location=s_location_val,
+        ir_location=ir_location_val,
+        result_log_base=project_path / Path("results/result_logs"),
+        query_path=project_path / Path("queries"),
+        sql_path=project_path / Path("graph_init_sql"),
         heat=1,
         n=2
     )

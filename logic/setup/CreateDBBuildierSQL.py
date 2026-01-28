@@ -1,7 +1,14 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 
-
-def create_sql(graph_name, vertex_dir, edge_dir, save_dir, docker_data_dir="graph_data"):
+def create_sql(
+        graph_name : str,
+        vertex_dict : dict,
+        edge_dict : dict,
+        save_dir : Path,
+        docker_data_dir=Path("graph_data")
+):
     graph_name = graph_name.lower()
 
     sql_base = f"""
@@ -25,7 +32,7 @@ ALTER TABLE {graph_name}._ag_label_edge
     
 """
 
-    for vertex_key, vertex_val in vertex_dir.items():
+    for vertex_key, vertex_val in vertex_dict.items():
         set_addendum = ""
         if "ir" in graph_name:
             set_addendum = """n.integer_id = toInteger(n.integer_id),                                                                                                                                                                                                          
@@ -48,7 +55,7 @@ SELECT ag_catalog.load_labels_from_file(
 );
 """
 
-    for edge_key, edge_val in edge_dir.items():
+    for edge_key, edge_val in edge_dict.items():
         sql_base += f"""
 -- create edge label
 SELECT ag_catalog.create_elabel('{graph_name}', '{edge_key}');
@@ -66,73 +73,40 @@ SELECT ag_catalog.load_edges_from_file(
 
 """
 
-    for vertex_name in vertex_dir.keys():
+    for vertex_name in vertex_dict.keys():
         sql_base += f"""ANALYZE {graph_name}."{vertex_name}";\n"""
 
-    for edge_name in edge_dir.keys():
+    for edge_name in edge_dict.keys():
         sql_base += f"""ANALYZE {graph_name}."{edge_name}";\n"""
 
 
-    with open(os.path.join(save_dir, f'{graph_name}_creation.sql'), 'w') as f:
+    with open(save_dir / f'{graph_name}_creation.sql', 'w') as f:
         f.write(sql_base)
 
-"""def create_sql_for_ldbc(save_dir):
-    annotated_ldbc_vertex_ir = {
-        "Comment": "/data/test/comment_0_0_ir.csv",
-        "Post": "/data/test/post_0_0_ir.csv"
-    }
-    annotated_ldbc_vertex_s = {
-        "Comment": "/data/test/comment_0_0_s.csv",
-        "Post": "/data/test/post_0_0_s.csv"
-    }
-    annotated_ldbc_edge = {
-        "comment_replyOf_comment": "/data/test/comment_replyOf_comment_0_0.csv",
-        "comment_replyOf_post": "/data/test/comment_replyOf_post_0_0.csv",
-    }
-
-    annotated_ldbc_vertex_comment_only_ir = {
-        "Comment": "/data/test/comment_0_0_ir.csv",
-    }
-    annotated_ldbc_vertex_comment_only_s = {
-        "Comment": "/data/test/comment_0_0_s.csv",
-    }
-    annotated_ldbc_edge_comment_only = {
-        "comment_replyOf_comment": "/data/test/comment_replyOf_comment_0_0.csv",
-    }
-
-    create_sql("ldbc_01_ir", annotated_ldbc_vertex_ir,
-               annotated_ldbc_edge, save_dir)
-    create_sql("ldbc_01_s", annotated_ldbc_vertex_s,
-               annotated_ldbc_edge, save_dir)
-    create_sql("ldbc_01_comment_ir", annotated_ldbc_vertex_comment_only_ir,
-               annotated_ldbc_edge_comment_only, save_dir)
-    create_sql("ldbc_01_comment_s", annotated_ldbc_vertex_comment_only_s,
-               annotated_ldbc_edge_comment_only, save_dir)"""
-
-def create_sql_for_artificial_trees(artificial_base_dir, save_dir):
-    artificial_tree_leaf = artificial_base_dir.split("/")[-1]
+def create_sql_for_artificial_trees(artificial_base_dir : Path, save_dir : Path):
+    artificial_tree_leaf = artificial_base_dir.parts[-1]
 
     for family_name in ["truebase", "ultratall", "ultrawide"]:
         for size in [10, 100, 1000, 10000, 100000]:
             for annotation_type in ["s", "ir"]:
                 edge_dict = {
-                    "HAS_CHILD" : os.path.join(artificial_tree_leaf, f"{family_name}_{size}_edges_{annotation_type}.csv")
+                    "HAS_CHILD" : artificial_tree_leaf / Path(f"{family_name}_{size}_edges_{annotation_type}.csv")
                 }
                 node_dict = {
-                    "TreeNode" : os.path.join(artificial_tree_leaf, f"{family_name}_{size}_nodes_{annotation_type}.csv")
+                    "TreeNode" : artificial_tree_leaf / Path(f"{family_name}_{size}_nodes_{annotation_type}.csv")
                 }
 
                 create_sql(f"{family_name}_{size}_{annotation_type}", node_dict, edge_dict, save_dir)
 
-def create_sql_for_annotated_ldbc(ldbc_dir, save_dir):
+def create_sql_for_annotated_ldbc(ldbc_dir : Path, save_dir : Path):
     edge_dict = {}
     ir_node_dict = {}
     s_node_dict = {}
 
     for filename in os.listdir(ldbc_dir):
-        full_path = os.path.join(ldbc_dir, filename)
+        full_path = ldbc_dir / filename
 
-        part_path = "/".join(full_path.split("/")[-2:])
+        part_path = "/".join(full_path.parts[-2:])
 
         if filename.endswith("_ir.csv"):
             s = filename.split("_")[0]
@@ -145,19 +119,40 @@ def create_sql_for_annotated_ldbc(ldbc_dir, save_dir):
         else:
             edge_dict[filename[:-8]] = part_path
 
-    graph_name_base = "_".join((ldbc_dir.split("/")[-1]).split("_")[1:])
+    graph_name_base = "_".join((ldbc_dir.parts[-1]).split("_")[1:])
 
     create_sql(f"{graph_name_base}_ir", ir_node_dict, edge_dict, save_dir)
     create_sql(f"{graph_name_base}_s", s_node_dict, edge_dict, save_dir)
 
+def create_sql_for_black_forest(artificial_forest_base_dir : Path, save_dir : Path, size : int):
+    for annotation_type in ["s", "ir"]:
+        edge_dict = {
+            "HAS_CHILD": artificial_forest_base_dir / Path(f"artificialforest_{size}_edges_{annotation_type}.csv")
+        }
+        node_dict = {
+            "TreeNode": artificial_forest_base_dir / Path(f"artificialforest_{size}_nodes_{annotation_type}.csv")
+        }
+
+        create_sql(f"artificialforest_{size}_{annotation_type}", node_dict, edge_dict, save_dir)
+
 
 if __name__ == '__main__':
-    save_dir = "/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/graph_init_sql"
+    load_dotenv()
 
-    lbdc_dir = "/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/data/annotated_ldbc_01"
-    lbdc2_dir = "/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/data/annotated_ldbc_comment_only_01"
-    artificial_tree_dir = "/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/data/artificial_trees"
+    save_dir = Path(os.getenv("PROJECT_PATH")) / Path("graph_init_sql")
 
-    create_sql_for_artificial_trees(artificial_tree_dir, save_dir)
-    create_sql_for_annotated_ldbc(lbdc_dir, save_dir)
-    create_sql_for_annotated_ldbc(lbdc2_dir, save_dir)
+    lbdc_dir = Path(os.getenv("PROJECT_PATH")) / Path("data/annotated_ldbc_01")
+    lbdc2_dir = Path(os.getenv("PROJECT_PATH")) / Path("data/annotated_ldbc_comment_only_01")
+    artificial_tree_dir = Path(os.getenv("PROJECT_PATH")) / Path("data/artificialtrees")
+
+    artificial_forest_dir = Path(os.getenv("PROJECT_PATH")) / Path("data/artificial_forest")
+
+    # create_sql_for_artificial_trees(artificial_tree_dir, save_dir)
+    # create_sql_for_annotated_ldbc(lbdc_dir, save_dir)
+    # create_sql_for_annotated_ldbc(lbdc2_dir, save_dir)
+
+    create_sql_for_black_forest(
+        artificial_forest_base_dir=artificial_forest_dir,
+        save_dir=save_dir,
+        size=40
+    )

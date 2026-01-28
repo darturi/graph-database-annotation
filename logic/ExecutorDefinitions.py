@@ -26,7 +26,8 @@ class Executor(ABC):
 
 
 class ApacheExecutor(Executor):
-    def __init__(self, dbname, user='danielarturi', password='', host='localhost', port=5432):
+    # def __init__(self, dbname, user='danielarturi', password='', host='localhost', port=5432):
+    def __init__(self, dbname, user : str, password : str, host : str, port : int):
         self.dbname = dbname
         self.user = user
         self.password = password
@@ -49,7 +50,7 @@ class ApacheExecutor(Executor):
         self.cursor.execute("LOAD 'age';")
         self.cursor.execute('SET search_path = ag_catalog, "$user", public;')
 
-    def execute_query(self, query_string):
+    def execute_query(self, query_string : str):
         start = time.perf_counter()
         self.cursor.execute(query_string)
         result = self.cursor.fetchall()
@@ -57,7 +58,7 @@ class ApacheExecutor(Executor):
 
         return (end - start) * 1000, result
 
-    def update_db(self, new_dbname):
+    def update_db(self, new_dbname : str):
         old_dbname = self.dbname
         self.dbname = new_dbname
 
@@ -84,7 +85,7 @@ class ApacheExecutor(Executor):
     def build_ir_index(self, index_name='ir_index'):
         pass
 
-    def collect_query_plan(self, query_string):
+    def collect_query_plan(self, query_string : str):
         _, plan = self.execute_query(f"EXPLAIN {query_string}")
         time_elapsed, _ = self.execute_query(query_string)
 

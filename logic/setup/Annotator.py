@@ -6,15 +6,12 @@ import pandas as pd
 from pathlib import Path
 
 def transform_csv(
-    input_csv_path,
-    output_csv_path,
-    start_vertex_type,
-    end_vertex_type,
+    input_csv_path : Path,
+    output_csv_path : Path,
+    start_vertex_type : str,
+    end_vertex_type : str,
     has_header=True
 ):
-    input_csv_path = Path(input_csv_path)
-    output_csv_path = Path(output_csv_path)
-
     with input_csv_path.open("r", newline="", encoding="utf-8") as infile, \
          output_csv_path.open("w", newline="", encoding="utf-8") as outfile:
 
@@ -110,7 +107,7 @@ class TreeNode:
 
 
 class Annotator():
-    def __init__(self, csv_dir="", start=1, load_post=True):
+    def __init__(self, csv_dir : Path, start=1, load_post=True):
         """
         Initialize the annotator with CSV data directory.
 
@@ -132,7 +129,7 @@ class Annotator():
         self.roots = set()
         self.ids = []
 
-    def save_annotations(self, save_path):
+    def save_annotations(self, save_path : Path):
         if len(self.id_mapping_dict) == 0:
             print("No annotations to save")
             return
@@ -152,7 +149,7 @@ class Annotator():
 
         edges = defaultdict(list)
 
-        comment_post_file = os.path.join(self.csv_dir, 'comment_replyOf_post_0_0.csv')
+        comment_post_file = self.csv_dir / Path('comment_replyOf_post_0_0.csv')
         with open(comment_post_file, 'r') as f:
             reader = csv.reader(f, delimiter='|')
             next(reader)  # Skip header
@@ -171,7 +168,7 @@ class Annotator():
             self.roots = self._get_all_post_ids()
 
                     # Load comment->comment edges
-        comment_comment_file = os.path.join(self.csv_dir, 'comment_replyOf_comment_0_0.csv')
+        comment_comment_file = self.csv_dir / Path('comment_replyOf_comment_0_0.csv')
         with open(comment_comment_file, 'r') as f:
             reader = csv.reader(f, delimiter='|')
             next(reader)  # Skip header
@@ -198,7 +195,7 @@ class Annotator():
         Returns:
             list: List of Post node IDs
         """
-        post_file = os.path.join(self.csv_dir, 'post_0_0.csv')
+        post_file = self.csv_dir / 'post_0_0.csv'
         post_ids = []
 
         with open(post_file, 'r') as f:
@@ -216,7 +213,7 @@ class Annotator():
         Returns:
             list: List of Post node IDs
         """
-        comment_file = os.path.join(self.csv_dir, 'comment_0_0.csv')
+        comment_file = self.csv_dir / 'comment_0_0.csv'
         comment_ids = []
 
         with open(comment_file, 'r') as f:
@@ -227,7 +224,7 @@ class Annotator():
 
         return comment_ids
 
-    def _build_tree(self, node_id, node_type):
+    def _build_tree(self, node_id, node_type : str):
         """
         Recursively build a tree from the edge adjacency list.
 
@@ -260,20 +257,7 @@ class Annotator():
 
         return self._build_tree(root_id, self.root_type)
 
-    """def probe_all_roots(self, root_ids):
-        Efficiently reconstruct multiple trees at once.
-
-        Args:
-            root_ids: List of Post node IDs
-
-        Returns:
-            Dict mapping root_id -> TreeNode
-        if self._edge_cache is None:
-            self._edge_cache = self._load_all_edges()
-
-        return {root_id: self._build_tree(root_id, self.root_type) for root_id in root_ids}"""
-
-    def ir_annotate_single_tree(self, tree):
+    def ir_annotate_single_tree(self, tree : TreeNode):
         self.traversal_counter = self.current_root_id
 
         def annotate_dfs(node, depth):
@@ -429,7 +413,7 @@ class Annotator():
             # Annotate tree
             annotate_func(tree)
 
-    def save_revised_csv(self, annotate_func, save_path="/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/data/annotated_ldbc_01", verbose=True, save_annotations=None):
+    def save_revised_csv(self, annotate_func, save_path : Path, verbose=True, save_annotations=None):
         if len(self.id_mapping_dict.keys()) == 0:
             self.build_annotation_dict(annotate_func)
 
@@ -440,7 +424,7 @@ class Annotator():
 
         # POST
         # Load Post CSV
-        post_path = os.path.join(self.csv_dir, 'post_0_0.csv')
+        post_path = self.csv_dir / Path('post_0_0.csv')
         post_df = pd.read_csv(post_path, sep="|")
 
         # Add columns to post df
@@ -476,12 +460,12 @@ class Annotator():
             post_df.reset_index(inplace=True)
 
             # Save updated post df as csv
-            post_df.to_csv(os.path.join(save_path, f'post_0_0_{file_addendum}.csv'), index=False)
+            post_df.to_csv(save_path / Path(f'post_0_0_{file_addendum}.csv'), index=False)
 
             # Handle comment - post edges
             transform_csv(
-                input_csv_path=os.path.join(self.csv_dir, 'comment_replyOf_post_0_0.csv'),
-                output_csv_path=os.path.join(save_path, 'comment_replyOf_post_0_0.csv'),
+                input_csv_path=self.csv_dir / Path('comment_replyOf_post_0_0.csv'),
+                output_csv_path=save_path / Path('comment_replyOf_post_0_0.csv'),
                 start_vertex_type="Comment",
                 end_vertex_type="Post",
                 has_header=True,
@@ -489,7 +473,7 @@ class Annotator():
 
         # COMMENT
         # Load Comment CSV
-        comment_path = os.path.join(self.csv_dir, 'comment_0_0.csv')
+        comment_path = self.csv_dir / Path('comment_0_0.csv')
         comment_df = pd.read_csv(comment_path, sep="|")
 
         # Add columns to comment df
@@ -520,12 +504,12 @@ class Annotator():
 
         comment_df.reset_index(inplace=True)
         # Save updated comment df as csv
-        comment_df.to_csv(os.path.join(save_path, f'comment_0_0_{file_addendum}.csv'), index=False)
+        comment_df.to_csv(save_path / Path(f'comment_0_0_{file_addendum}.csv'), index=False)
 
         # Update graph metadata .jsonl
-        base_name = "_".join(save_path.split("/")[-1].split("_")[1:])
+        base_name = "_".join(save_path.parts[-1].split("_")[1:])
         print(f"Annotating {base_name}")
-        metadata_path = os.path.join(os.getenv("GRAPH_METADATA_STORE"), f"{base_name}_ir.json")
+        metadata_path = os.getenv("PROJECT_PATH") / Path(f"graph_metadata/{base_name}_ir.json")
         with open(metadata_path, "w", encoding="utf-8") as f:
             s_record = {
                 "graph_name": f"{base_name}_{file_addendum}",
@@ -537,8 +521,8 @@ class Annotator():
 
         # Handle comment - comment edges
         transform_csv(
-            input_csv_path=os.path.join(self.csv_dir, 'comment_replyOf_comment_0_0.csv'),
-            output_csv_path=os.path.join(save_path, 'comment_replyOf_comment_0_0.csv'),
+            input_csv_path=self.csv_dir / 'comment_replyOf_comment_0_0.csv',
+            output_csv_path=save_path / 'comment_replyOf_comment_0_0.csv',
             start_vertex_type="Comment",
             end_vertex_type="Comment",
             has_header=True,
@@ -546,9 +530,9 @@ class Annotator():
 
 
 if __name__ == '__main__':
-    csv_path = "/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/data/original_data/ldbc_data/social_network-sf0.1-CsvBasic-LongDateFormatter/dynamic"
+    csv_path = os.getenv("PROJECT_PATH") / Path("data") / Path("original_data/ldbc_data/social_network-sf0.1-CsvBasic-LongDateFormatter/dynamic")
 
-    save_path = "/Users/danielarturi/Desktop/COMP 400/Kuzu1/LDBC_Work/data/annotated_ldbc_comment_only_01"
+    save_path =  os.getenv("PROJECT_PATH") / Path("data") / Path("annotated_ldbc_comment_only_01")
 
     ann = Annotator(csv_path, load_post=False)
 
