@@ -4,4 +4,5 @@ data/*
 kuzu_databases/*
 .env
 steps.md
+results/*
 

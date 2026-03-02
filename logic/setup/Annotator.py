@@ -5,6 +5,9 @@ import os
 import pandas as pd
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+
 def transform_csv(
     input_csv_path : Path,
     output_csv_path : Path,
@@ -30,8 +33,9 @@ def transform_csv(
         if has_header:
             next(reader, None)
 
+        end_id_col = 1 if str(input_csv_path).endswith(".csv") else 2
         for row in reader:
-            start_id, end_id = row[0], row[1]
+            start_id, end_id = row[0], row[end_id_col]
 
             writer.writerow([
                 start_id,
@@ -51,7 +55,6 @@ class TreeNode:
 
     def add_child(self, child_node):
         """Add a child TreeNode to this node."""
-        child_node.type = "Comment"
         self.children.append(child_node)
 
     def __repr__(self):
@@ -107,7 +110,7 @@ class TreeNode:
 
 
 class Annotator():
-    def __init__(self, csv_dir : Path, start=1, load_post=True):
+    def __init__(self, csv_dir : Path, start=1, load_type=None, edge_filename='comment_replyOf_comment_0_0.csv', node_filename='comment_0_0_plain.csv'):
         """
         Initialize the annotator with CSV data directory.
 
@@ -119,10 +122,13 @@ class Annotator():
         self._edge_cache = None
         self.id_mapping_dict = {}
 
-        self.load_post = load_post
+        self.load_type = load_type
 
-        if self.load_post:
-            self.root_type = "Post"
+        self.node_filename = node_filename
+        self.edge_filename = edge_filename
+
+        if self.load_type:
+            self.root_type = self.load_type
         else:
             self.root_type = "Comment"
 
@@ -149,7 +155,7 @@ class Annotator():
 
         edges = defaultdict(list)
 
-        comment_post_file = self.csv_dir / Path('comment_replyOf_post_0_0.csv')
+        """comment_post_file = self.csv_dir / Path(self.edge_filename)
         with open(comment_post_file, 'r') as f:
             reader = csv.reader(f, delimiter='|')
             next(reader)  # Skip header
@@ -157,33 +163,35 @@ class Annotator():
                 child_id = int(row[0])  # Comment
                 parent_id = int(row[1])  # Post
 
-                if self.load_post:
-                    # self.roots.add(parent_id)
-                    edges[('Post', parent_id)].append(('Comment', child_id))
-                else:
-                    # Comment is a root (replies to post, not another comment)
-                    self.roots.add(child_id)
+                # Comment is a root (replies to post, not another comment)
+                self.roots.add(child_id)
 
-        if self.load_post:
-            self.roots = self._get_all_post_ids()
+                    # Load comment->comment edges"""
+        comment_comment_file = self.csv_dir / Path(self.edge_filename)
 
-                    # Load comment->comment edges
-        comment_comment_file = self.csv_dir / Path('comment_replyOf_comment_0_0.csv')
+        # For comment-only mode, use two-pass approach to correctly identify roots
+        # Roots are Comments that have children but are never children themselves
+        all_children = set()
+        all_parents = set()
+
         with open(comment_comment_file, 'r') as f:
             reader = csv.reader(f, delimiter='|')
             next(reader)  # Skip header
             for row in reader:
                 child_id = int(row[0])  # Comment (child)
-                parent_id = int(row[1])  # Comment (parent)
+                parent_id = int(row[1 if self.edge_filename.endswith(".csv") else 2])  # Comment (parent)
 
-                # If its just comments
-                if not self.load_post:
-                    if child_id in self.roots:
-                        self.roots.remove(child_id)
-                    if parent_id not in self.roots:
-                        self.roots.add(parent_id)
+                # For comment-only mode, collect all children and parents
+                all_children.add(child_id)
+                all_parents.add(parent_id)
 
-                edges[('Comment', parent_id)].append(('Comment', child_id))
+                edges[(self.root_type, parent_id)].append((self.root_type, child_id))
+
+        # For comment-only mode, roots are:
+        # - Comments that reply to Posts (already in self.roots from above), OR
+        # - Comments that have children (all_parents)
+        # MINUS any Comment that is a child of another Comment
+        self.roots = (self.roots | all_parents) - all_children
 
         self._edge_cache = edges
         return edges
@@ -213,7 +221,7 @@ class Annotator():
         Returns:
             list: List of Post node IDs
         """
-        comment_file = self.csv_dir / 'comment_0_0.csv'
+        comment_file = self.csv_dir / self.node_filename
         comment_ids = []
 
         with open(comment_file, 'r') as f:
@@ -262,24 +270,28 @@ class Annotator():
 
         def annotate_dfs(node, depth):
             """
-            Perform DFS traversal and annotate each node.
+            Perform DFS traversal and annotate each node using nested set encoding.
 
             Args:
                 node: Current TreeNode being processed
                 depth: Depth of current node (root has depth 0)
 
             Returns:
-                tuple: (upper_bound, height) of the subtree rooted at this node
+                int: Height of the subtree rooted at this node
             """
-            # Assign integer_id based on DFS traversal order
+            # Assign integer_id (left value) when entering the node
             integer_id = self.traversal_counter
             self.traversal_counter += 1
 
             # Base case: leaf node
             if not node.children:
+                # Assign upper_bound (right value) when leaving the node
+                upper_bound = self.traversal_counter
+                self.traversal_counter += 1
+
                 node.new_id = {
                     "integer_id": integer_id,
-                    "upper_bound": integer_id,
+                    "upper_bound": upper_bound,
                     "height": 0,
                     "depth": depth
                 }
@@ -292,21 +304,23 @@ class Annotator():
                     self.id_mapping_dict[node.type] = {}
                 self.id_mapping_dict[node.type][node.id] = node.new_id
 
-                return integer_id, 0
+                return 0
 
             # Recursive case: process all children
-            max_upper_bound = integer_id
             max_height = 0
 
             for child in node.children:
-                child_upper_bound, child_height = annotate_dfs(child, depth + 1)
-                max_upper_bound = max(max_upper_bound, child_upper_bound)
+                child_height = annotate_dfs(child, depth + 1)
                 max_height = max(max_height, child_height + 1)
+
+            # Assign upper_bound (right value) after all children are processed
+            upper_bound = self.traversal_counter
+            self.traversal_counter += 1
 
             # Annotate current node
             node.new_id = {
                 "integer_id": integer_id,
-                "upper_bound": max_upper_bound,
+                "upper_bound": upper_bound,
                 "height": max_height,
                 "depth": depth
             }
@@ -319,16 +333,15 @@ class Annotator():
                 self.id_mapping_dict[node.type] = {}
             self.id_mapping_dict[node.type][node.id] = node.new_id
 
-            return max_upper_bound, max_height
+            return max_height
 
         # Start DFS from root with depth 0
         annotate_dfs(tree, 0)
 
         # Update current_root_id for next tree
-        next_id = self.traversal_counter
-        self.current_root_id = next_id
+        self.current_root_id = self.traversal_counter
 
-        return next_id
+        return self.current_root_id
 
     def s_annotate_single_tree(self, tree):
         def annotate_dfs(node, depth, string_id):
@@ -423,7 +436,7 @@ class Annotator():
         file_addendum = None
 
         # POST
-        # Load Post CSV
+        """# Load Post CSV
         post_path = self.csv_dir / Path('post_0_0.csv')
         post_df = pd.read_csv(post_path, sep="|")
 
@@ -433,15 +446,17 @@ class Annotator():
 
         if annotate_func == self.s_annotate_single_tree:
             post_df['string_id'] = "N/A"
-            file_addendum = "s"
-            root_list = [str(r) for r in self.roots]
+            file_addendum = "dewey"
+            # Get the string_id annotation for each root from the mapping dict
+            root_list = [self.id_mapping_dict[self.root_type][r]['string_id'] for r in self.roots]
         elif annotate_func == self.ir_annotate_single_tree:
             post_df['integer_id'] = pd.Series([-1] * len(post_df), dtype="Int64")
             post_df['upper_bound'] = pd.Series([-1] * len(post_df), dtype="Int64")
-            file_addendum = "ir"
-            root_list = [r for r in self.roots]
+            file_addendum = "prepost"
+            # Get the integer_id annotation for each root from the mapping dict
+            root_list = [self.id_mapping_dict[self.root_type][r]['integer_id'] for r in self.roots]"""
 
-        if self.load_post:
+        """if self.load_post:
             # Update with annotations
             post_subsection = self.id_mapping_dict['Post']
             print(len(post_subsection))
@@ -465,15 +480,15 @@ class Annotator():
             # Handle comment - post edges
             transform_csv(
                 input_csv_path=self.csv_dir / Path('comment_replyOf_post_0_0.csv'),
-                output_csv_path=save_path / Path('comment_replyOf_post_0_0.csv'),
+                output_csv_path=save_path / Path("edges") / Path('comment_replyOf_post_0_0.csv'),
                 start_vertex_type="Comment",
                 end_vertex_type="Post",
                 has_header=True,
-            )
+            )"""
 
         # COMMENT
         # Load Comment CSV
-        comment_path = self.csv_dir / Path('comment_0_0.csv')
+        comment_path = self.csv_dir / Path(self.node_filename)
         comment_df = pd.read_csv(comment_path, sep="|")
 
         # Add columns to comment df
@@ -482,13 +497,17 @@ class Annotator():
 
         if annotate_func == self.s_annotate_single_tree:
             comment_df['string_id'] = "N/A"
+            file_addendum = "dewey"
+            root_list = [self.id_mapping_dict[self.root_type][r]['string_id'] for r in self.roots]
         elif annotate_func == self.ir_annotate_single_tree:
             comment_df['integer_id'] = pd.Series([-1] * len(comment_df), dtype="Int64")
             comment_df['upper_bound'] = pd.Series([-1] * len(comment_df), dtype="Int64")
+            file_addendum = "prepost"
+            root_list = [self.id_mapping_dict[self.root_type][r]['integer_id'] for r in self.roots]
 
         # Update with annotations
         counter = 0
-        comment_subsection = self.id_mapping_dict['Comment']
+        comment_subsection = self.id_mapping_dict[self.root_type]
 
         # print(comment_subsection)
 
@@ -504,12 +523,13 @@ class Annotator():
 
         comment_df.reset_index(inplace=True)
         # Save updated comment df as csv
-        comment_df.to_csv(save_path / Path(f'comment_0_0_{file_addendum}.csv'), index=False)
+        comment_df.to_csv(save_path / Path("nodes") / Path(f'{self.root_type}_0_0_{file_addendum}.csv'), index=False)
 
         # Update graph metadata .jsonl
-        base_name = "_".join(save_path.parts[-1].split("_")[1:])
+        base_name = save_path.parts[-1] # "_".join(save_path.parts[-1].split("_")[1:])
         print(f"Annotating {base_name}")
-        metadata_path = os.getenv("PROJECT_PATH") / Path(f"graph_metadata/{base_name}_ir.json")
+
+        metadata_path = Path(os.getenv("PROJECT_PATH")) / Path(f"graph_metadata/{base_name}_{file_addendum}.json")
         with open(metadata_path, "w", encoding="utf-8") as f:
             s_record = {
                 "graph_name": f"{base_name}_{file_addendum}",
@@ -521,22 +541,49 @@ class Annotator():
 
         # Handle comment - comment edges
         transform_csv(
-            input_csv_path=self.csv_dir / 'comment_replyOf_comment_0_0.csv',
-            output_csv_path=save_path / 'comment_replyOf_comment_0_0.csv',
-            start_vertex_type="Comment",
-            end_vertex_type="Comment",
+            input_csv_path=self.csv_dir / self.edge_filename,
+            output_csv_path=save_path / Path("edges") / self.edge_filename,
+            start_vertex_type=self.root_type,
+            end_vertex_type=self.root_type,
             has_header=True,
         )
 
+        # Create plain version (dewey without height, depth, string_id)
+        if annotate_func == self.s_annotate_single_tree:
+            plain_comment_df = comment_df.drop(columns=["height", "depth", "string_id"])
+            plain_comment_df.to_csv(save_path / Path("nodes") / Path(self.node_filename), index=False)
+
+            """if self.load_post:
+                plain_post_df = post_df.drop(columns=["height", "depth", "string_id"])
+                plain_post_df.to_csv(save_path / Path(f'post_0_0_plain.csv'), index=False)"""
+
 
 if __name__ == '__main__':
-    csv_path = os.getenv("PROJECT_PATH") / Path("data") / Path("original_data/ldbc_data/social_network-sf0.1-CsvBasic-LongDateFormatter/dynamic")
+    load_dotenv()
 
-    save_path =  os.getenv("PROJECT_PATH") / Path("data") / Path("annotated_ldbc_comment_only_01")
+    """csv_path = os.getenv("PROJECT_PATH") / Path("data") / Path("original_data/ldbc_data/social_network-sf1-CsvBasic-StringDateFormatter/dynamic")
 
-    ann = Annotator(csv_path, load_post=False)
+    save_path =  os.getenv("PROJECT_PATH") / Path("data") / Path("prepared/snb/sf1")
+
+    ann = Annotator(csv_path)
 
     ann.save_revised_csv(ann.ir_annotate_single_tree, save_path=save_path)
     ann.id_mapping_dict = {}
     ann.ids = []
-    ann.save_revised_csv(ann.s_annotate_single_tree, save_path=save_path)
+    ann.save_revised_csv(ann.s_annotate_single_tree, save_path=save_path)"""
+
+    sf2_csv_path = Path(os.getenv("PROJECT_PATH")) / "data" / "original_data/sf2"
+    sf2_save_path = Path(os.getenv("PROJECT_PATH")) / "data" / "prepared/snb/sf2"
+    sf2_ann = Annotator(sf2_csv_path, load_type="Place", edge_filename="place_isPartOf_place_0_0.txt", node_filename="place_0_0.txt")
+    sf2_ann.save_revised_csv(sf2_ann.ir_annotate_single_tree, save_path=sf2_save_path)
+    sf2_ann.id_mapping_dict = {}
+    sf2_ann.ids = []
+    sf2_ann.save_revised_csv(sf2_ann.s_annotate_single_tree, save_path=sf2_save_path)
+
+    sf3_csv_path = Path(os.getenv("PROJECT_PATH")) / "data" / "original_data/sf3"
+    sf3_save_path = Path(os.getenv("PROJECT_PATH")) / "data" / "prepared/snb/sf3"
+    sf3_ann = Annotator(sf3_csv_path, load_type="Tagclass", edge_filename="tagclass_isSubclassOf_tagclass_0_0.txt", node_filename="tagclass_0_0.txt")
+    sf3_ann.save_revised_csv(sf3_ann.ir_annotate_single_tree, save_path=sf3_save_path)
+    sf3_ann.id_mapping_dict = {}
+    sf3_ann.ids = []
+    sf3_ann.save_revised_csv(sf3_ann.s_annotate_single_tree, save_path=sf3_save_path)

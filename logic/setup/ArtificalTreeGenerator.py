@@ -92,14 +92,20 @@ def generate_random_forest(
 
         tree_depth = random.randint(min_depth, max_depth)
 
-        for _ in range(tree_depth):
+        for depth_level in range(tree_depth):
             new_frontier = []
+
+            # Pick one node that must have at least 1 child to guarantee min_depth
+            guaranteed_node = random.choice(frontier) if depth_level < min_depth else None
 
             while len(frontier) > 0:
                 parent = random.choice(frontier)
 
+                # Ensure at least 1 child for the guaranteed node until min_depth is reached
+                effective_min_children = max(1, min_children) if parent is guaranteed_node else min_children
+
                 max_possible = min(max_children, num_nodes - running_id)
-                num_children = random.randint(min_children, max(min_children, max_possible))
+                num_children = random.randint(effective_min_children, max(effective_min_children, max_possible))
 
                 # Create the children
                 for _ in range(num_children):
@@ -111,7 +117,7 @@ def generate_random_forest(
                     child = TreeNode(node_id=running_id)
                     parent.add_child(child)
                     child.type = node_name
-                    frontier.append(child)
+                    new_frontier.append(child)
 
                 # Remove this parent from frontier since it has its children
                 frontier.remove(parent)
@@ -198,12 +204,14 @@ def create_forest(
 
     ann = Annotator(csv_dir=Path(""))
 
-    base_name=f"artificialforest_{num_nodes}"
+    base_name=f"artificial_forest_{num_nodes}"
 
-    ir_edge_path = forest_path / Path(f"{base_name}_edges_ir.csv")
-    ir_node_path = forest_path / Path(f"{base_name}_nodes_ir.csv")
-    s_edge_path = forest_path / Path(f"{base_name}_edges_s.csv")
-    s_node_path = forest_path / Path(f"{base_name}_nodes_s.csv")
+    ir_edge_path = forest_path / Path(str(num_nodes)) / Path("edges") / Path("TreeEdges_prepost.csv")
+    ir_node_path = forest_path / Path(str(num_nodes)) / Path("nodes") / Path("TreeNodes_prepost.csv")
+    s_edge_path = forest_path / Path(str(num_nodes)) / Path("edges") / Path("TreeEdges_dewey.csv")
+    s_node_path = forest_path / Path(str(num_nodes)) / Path("nodes") / Path("TreeNodes_dewey.csv")
+    plain_edge_path = forest_path / Path(str(num_nodes)) / Path("edges") / Path("TreeEdges_plain.csv")
+    plain_node_path = forest_path / Path(str(num_nodes)) / Path("nodes") / Path("TreeNodes_plain.csv")
 
     ann.current_root_id = 1
 
@@ -216,10 +224,10 @@ def create_forest(
         node_name=ir_node_path,
     )
 
-    metadata_path = os.getenv("PROJECT_PATH") / Path("graph_metadata") / f"{base_name}_ir.json"
+    metadata_path = os.getenv("PROJECT_PATH") / Path("graph_metadata") / f"{base_name}_prepost.json"
     with open(metadata_path, "w", encoding="utf-8") as f:
         ir_record = {
-            "graph_name": f"{base_name}_ir",
+            "graph_name": f"{base_name}_prepost",
             "roots": [node.new_id["integer_id"] for node in root_list],
             "id_list": ann.ids,
         }
@@ -240,15 +248,24 @@ def create_forest(
         node_name=s_node_path,
     )
 
-    metadata_path = os.getenv("PROJECT_PATH") / Path("graph_metadata") / f"{base_name}_s.json"
+    metadata_path = os.getenv("PROJECT_PATH") / Path("graph_metadata") / f"{base_name}_dewey.json"
     with open(metadata_path, "w", encoding="utf-8") as f:
         ir_record = {
-            "graph_name": f"{base_name}_s",
+            "graph_name": f"{base_name}_dewey",
             "roots": [node.new_id["string_id"] for node in root_list],
             "id_list": ann.ids,
         }
         json.dump(ir_record, f, ensure_ascii=False)
         f.write("\n")
+
+    # Write plain version (dewey without height, depth, string_id)
+    dewey_nodes_df = pd.read_csv(s_node_path)
+    plain_nodes_df = dewey_nodes_df.drop(columns=["height", "depth", "string_id"])
+    plain_nodes_df.to_csv(plain_node_path, index=False, encoding="utf-8")
+
+    # Copy edge file for plain version
+    dewey_edges_df = pd.read_csv(s_edge_path)
+    dewey_edges_df.to_csv(plain_edge_path, index=False, encoding="utf-8")
 
 def create_all_trees(tree_path : Path, seed=42):
     random.seed(seed)
@@ -339,10 +356,12 @@ def create_all_trees(tree_path : Path, seed=42):
 
             base_name = f"{tree_family}_{size}".lower()
 
-            ir_edge_path = tree_path / f"{base_name}_edges_ir.csv"
-            ir_node_path = tree_path / f"{base_name}_nodes_ir.csv"
-            s_edge_path = tree_path / f"{base_name}_edges_s.csv"
-            s_node_path = tree_path / f"{base_name}_nodes_s.csv"
+            ir_edge_path = tree_path / Path(tree_family) / Path(str(size)) / Path("edges") / Path("TreeEdges_prepost.csv")
+            ir_node_path = tree_path / Path(tree_family) / Path(str(size)) / Path("nodes") / Path("TreeNodes_prepost.csv")
+            s_edge_path = tree_path / Path(tree_family) / Path(str(size)) / Path("edges") / Path("TreeEdges_dewey.csv")
+            s_node_path = tree_path / Path(tree_family) / Path(str(size)) / Path("nodes") / Path("TreeNodes_dewey.csv")
+            plain_edge_path = tree_path / Path(tree_family) / Path(str(size)) / Path("edges") / Path("TreeEdges_plain.csv")
+            plain_node_path = tree_path / Path(tree_family) / Path(str(size)) / Path("nodes") / Path("TreeNodes_plain.csv")
 
             ann.current_root_id = 1
 
@@ -351,10 +370,10 @@ def create_all_trees(tree_path : Path, seed=42):
             write_tree_to_csv(tree, ir_edge_path, ir_node_path)
 
             # Update graph metadata .jsonl
-            metadata_path = os.getenv("PROJECT_PATH") / Path("graph_metadata") / f"{base_name}_ir.json"
+            metadata_path = os.getenv("PROJECT_PATH") / Path("graph_metadata") / f"{base_name}_prepost.json"
             with open(metadata_path, "w", encoding="utf-8") as f:
                 ir_record = {
-                    "graph_name": f"{base_name}_ir",
+                    "graph_name": f"{base_name}_prepost",
                     "roots": [1],
                     "id_list": ann.ids,
                 }
@@ -370,15 +389,24 @@ def create_all_trees(tree_path : Path, seed=42):
             write_tree_to_csv(tree, s_edge_path, s_node_path)
 
             # Update graph metadata .jsonl
-            metadata_path = os.getenv("PROJECT_PATH") / Path("graph_metadata") / f"{base_name}_s.json"
+            metadata_path = os.getenv("PROJECT_PATH") / Path("graph_metadata") / f"{base_name}_dewey.json"
             with open(metadata_path, "w", encoding="utf-8") as f:
                 s_record = {
-                    "graph_name": f"{base_name}_s",
+                    "graph_name": f"{base_name}_dewey",
                     "roots": ["1"],
                     "id_list": ann.ids,
                 }
                 json.dump(s_record, f, ensure_ascii=False)
                 f.write("\n")
+
+            # Write plain version (dewey without height, depth, string_id)
+            dewey_nodes_df = pd.read_csv(s_node_path)
+            plain_nodes_df = dewey_nodes_df.drop(columns=["height", "depth", "string_id"])
+            plain_nodes_df.to_csv(plain_node_path, index=False, encoding="utf-8")
+
+            # Copy edge file for plain version
+            dewey_edges_df = pd.read_csv(s_edge_path)
+            dewey_edges_df.to_csv(plain_edge_path, index=False, encoding="utf-8")
 
             ann.ids = []
 
@@ -387,21 +415,30 @@ if __name__ == '__main__':
 
     print(os.getenv("PROJECT_PATH"))
 
-    base_save = os.getenv("PROJECT_PATH") / Path("data")
+    base_save = os.getenv("PROJECT_PATH") / Path("data") / Path("prepared")
 
-    save_path = base_save / Path("artificial_forest")
-    create_forest(
+    save_path = base_save / Path("artificial_forests")
+    """create_forest(
         forest_path=save_path,
         num_nodes=40,
         min_children=0,
         max_children=2,
         min_depth=1,
         max_depth=3
+    )"""
+
+    create_forest(
+        forest_path=save_path,
+        num_nodes=1000,
+        min_children=0,
+        max_children=3,
+        min_depth=4,
+        max_depth=9
     )
 
     # original_data_dir = Path("/Users/danielarturi/Desktop/graph-database-annotation/data/original_data/ldbc_data/social_network-sf0.1-CsvBasic-LongDateFormatter/dynamic")
 
     # create_all_trees(
-    #     tree_path=os.getenv("PROJECT_PATH") / Path("data/artificial_trees"),
+    #      tree_path=base_save / Path("artificial_trees"),
     # )
 
